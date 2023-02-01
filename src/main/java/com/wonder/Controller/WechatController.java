@@ -1,9 +1,12 @@
 package com.wonder.Controller;
 
 
+import com.wonder.Service.Impl.WechatServiceImpl;
 import com.wonder.Service.WechatService;
 import com.wonder.dto.Message;
+
 import com.wonder.util.WechatUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 
@@ -16,6 +19,7 @@ import java.util.Properties;
 @RestController
 //@RequestMapping("/wechat")
 public class WechatController {
+
 
 //    public static void main(String[] args) throws IOException {
 //        //获取appid和密钥
@@ -61,43 +65,12 @@ public class WechatController {
      */
     //改成PostMapping用来接收POST请求，produces指定响应的类型为xml，RequestBody和实体类Message的Xml注解一起实现直接接收xml请求
     @RequestMapping(method = RequestMethod.POST,consumes = "text/xml", produces = "text/xml;charset=utf-8")
-    public Object message(@RequestBody Message requestMessage,HttpServletRequest request){
-
-        System.out.println("post方法入参："+requestMessage+" request.getMethod()"+request.getMethod());
-        String fromUserName = requestMessage.getFromUserName();
-        String toUserName = requestMessage.getToUserName();
-        //新建一个响应对象
-        Message responseMessage = new Message();
-        //消息来自谁
-        responseMessage.setFromUserName(toUserName);
-        //消息发送给谁
-        responseMessage.setToUserName(fromUserName);
-        //消息类型，返回的是文本
-        responseMessage.setMsgType("text");
-        //消息创建时间，当前时间
-        responseMessage.setCreateTime(System.currentTimeMillis());
-        //这个是响应消息内容，直接复制收到的内容做演示，甚至整个响应对象都可以直接使用原请求参数对象，只需要换下from和to就可以了哈哈哈
-        responseMessage.setContent(requestMessage.getContent());
-        return responseMessage;
+    public Object message(@RequestBody Message requestMessage) throws Exception {
+        WechatService wechatService = new WechatServiceImpl();
+        Object obj = wechatService.userMessageHandle(requestMessage);
+        return obj;
     }
 
-    //测试的方法
-    /*
-    @RequestMapping("/postAndGet")
-    public String checkValid(String signature, String timestamp,
-                             String nonce, String echostr, HttpServletRequest req) {
-        String requestMethod = req.getMethod();
-        if (requestMethod.equals("POST")) { // 处理 POST 请求
-            Map<String, String> msgMap = WechatService.parseXmlData2Map(req);
-            System.out.println(msgMap);
-            return "OK";
-        } else if (requestMethod.equals("GET")) { // 处理 GET 请求
-            return WechatUtils.checkSignature(signature,timestamp, nonce,"MDpgWKeQxj4yTf" ) ? echostr
-                    : "校验失败";
-        } else {
-            return "不是 GET 和 POST";
-        }
-    }
-     */
+
 
 }

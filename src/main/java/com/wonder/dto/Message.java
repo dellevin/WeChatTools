@@ -1,8 +1,6 @@
 package com.wonder.dto;
 
-
 import lombok.Data;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -55,4 +53,10 @@ public class Message {
      */
     @XmlElement(name = "Content")
     String content;
+    
+    /**
+     * 图片消息内容
+     */
+    @XmlElement(name = "PicUrl")
+    String picUrl;
 }
