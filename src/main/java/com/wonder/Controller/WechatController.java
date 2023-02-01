@@ -60,8 +60,6 @@ public class WechatController {
      * @return 响应消息或者“success”
      */
     //改成PostMapping用来接收POST请求，produces指定响应的类型为xml，RequestBody和实体类Message的Xml注解一起实现直接接收xml请求
-
-    //@PostMapping(value = "post",consumes = "text/xml", produces = "text/xml;charset=utf-8")
     @RequestMapping(method = RequestMethod.POST,consumes = "text/xml", produces = "text/xml;charset=utf-8")
     public Object message(@RequestBody Message requestMessage,HttpServletRequest request){
 
@@ -76,13 +74,15 @@ public class WechatController {
         responseMessage.setToUserName(fromUserName);
         //消息类型，返回的是文本
         responseMessage.setMsgType("text");
-        //消息创建时间，当前时间就可以
+        //消息创建时间，当前时间
         responseMessage.setCreateTime(System.currentTimeMillis());
         //这个是响应消息内容，直接复制收到的内容做演示，甚至整个响应对象都可以直接使用原请求参数对象，只需要换下from和to就可以了哈哈哈
         responseMessage.setContent(requestMessage.getContent());
         return responseMessage;
     }
 
+    //测试的方法
+    /*
     @RequestMapping("/postAndGet")
     public String checkValid(String signature, String timestamp,
                              String nonce, String echostr, HttpServletRequest req) {
@@ -98,6 +98,6 @@ public class WechatController {
             return "不是 GET 和 POST";
         }
     }
-
+     */
 
 }
