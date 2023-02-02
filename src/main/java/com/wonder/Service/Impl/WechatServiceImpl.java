@@ -42,6 +42,7 @@ public class WechatServiceImpl implements WechatService {
         {
             String getUserMessage = requestMessage.getContent();
             String XiaoAiTalk="https://api.wya6.cn/api/Xiao_Ai?apiKey=3d9b9758e7946eb2352f446552e38615&message="+getUserMessage;
+            System.out.println(XiaoAiTalk);
             //得到json数据
             String res = cn.hutool.http.HttpUtil.get(XiaoAiTalk);
             //解析json字符串
