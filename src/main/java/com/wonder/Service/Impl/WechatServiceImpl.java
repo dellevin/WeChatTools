@@ -10,7 +10,7 @@ import com.wonder.util.BaiDuOcrUtils.*;
 import com.wonder.util.ocrWeChat;
 import org.springframework.stereotype.Service;
 import java.net.URLEncoder;
-import java.util.Iterator;
+
 import java.util.Map;
 
 
@@ -40,17 +40,22 @@ public class WechatServiceImpl implements WechatService {
         String getMessage =  requestMessage.getContent();
         if(getMessage!=null)
         {
-            //<xml>
-            //  <ToUserName><![CDATA[toUser]]></ToUserName>
-            //  <FromUserName><![CDATA[fromUser]]></FromUserName>
-            //  <CreateTime>12345678</CreateTime>
-            //  <MsgType><![CDATA[text]]></MsgType>
-            //  <Content><![CDATA[你好]]></Content>
-            //</xml>
-
-
-            //这个是响应消息内容，直接复制收到的内容做演示，甚至整个响应对象都可以直接使用原请求参数对象，只需要换下from和to就可以了哈哈哈
-            responseMessage.setContent(requestMessage.getContent());
+            String getUserMessage = requestMessage.getContent();
+            String XiaoAiTalk="https://api.wya6.cn/api/Xiao_Ai?apiKey=3d9b9758e7946eb2352f446552e38615&message="+getUserMessage;
+            //得到json数据
+            String res = cn.hutool.http.HttpUtil.get(XiaoAiTalk);
+            //解析json字符串
+            JSONObject jsonObject = JSONObject.parseObject(res);
+            //使用的是 无边api接口 https://api.wya6.cn/
+            //获取无边api接口中小爱机器人回复的 data的数据
+            String dataString = jsonObject.getString("data");
+            //System.out.println(dataString);
+            Map maps = (Map) JSON.parse(dataString);
+            String textString = (String) maps.get("text");
+            System.out.println("用户:"+getUserMessage);
+            System.out.println("小爱:"+textString);
+            //这个是响应消息内容
+            responseMessage.setContent(textString);
         }
 
         //获取 图片地址
@@ -103,11 +108,11 @@ public class WechatServiceImpl implements WechatService {
                     //message = "1";
                     wordsResult = wordsResult.substring(1,wordsResult.length() - 1);
                     String[] results = wordsResult.split(",");
-                    for(int i = 0; i < results.length; i++) {
+                    for (String s : results) {
                         //System.out.println(results[i]);
-                        Map maps=(Map) JSON.parse(results[i]);
+                        Map maps = (Map) JSON.parse(s);
                         tempMessage = (String) maps.get("words");
-                        message = tempMessage+"\n"+message;
+                        message = message + "\n" + tempMessage;
                     }
                 }else if(getWords_result_num==1){
                     wordsResult = wordsResult.substring(1,wordsResult.length() - 1);
@@ -133,7 +138,6 @@ public class WechatServiceImpl implements WechatService {
                 responseMessage.setContent(message);
             }
         }
-
         return responseMessage;
     }
 }
