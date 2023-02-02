@@ -1,20 +1,12 @@
 package com.wonder.Service.Impl;
 
+import com.baidu.aip.util.Base64Util;
 import com.wonder.Service.WechatService;
 import com.wonder.dto.Message;
 import com.wonder.util.ocrWeChat;
-import org.apache.logging.log4j.util.Base64Util;
-import org.dom4j.Document;
-import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
 import org.springframework.stereotype.Service;
-
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
 import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
 
 @Service
 public class WechatServiceImpl implements WechatService {
@@ -59,18 +51,25 @@ public class WechatServiceImpl implements WechatService {
 
         if (getPicUrl!=null)
         {
+            //请求图片需经过base64编码及urlencode后传入：图片的base64编码指将一副图片数据编码成一串字符串，
+            // 使用该字符串代替图像地址。您可以首先得到图片的二进制，然后去掉编码头后再进行urlencode。
+
             System.out.println(getPicUrl);
             //得到保存图片的路径
-            String imgPath=ocrWeChat.getImg(getPicUrl);
+            //String imgPath=ocrWeChat.getImg(getPicUrl);
+            //得到图片的 字符流
+            byte[]  byteImg= ocrWeChat.getImgByte(getPicUrl).readAllBytes();
+            System.out.println("byteImg: "+byteImg);
             //得到百度云的accessToken
             String accessToken=ocrWeChat.getBaiDuOcrToken();
-
-            System.out.println("BDYaccessToken:"+accessToken);
-
-
-
-            String baiduOcrApi="https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic";
+            System.out.println("BDYaccessToken: "+accessToken);
+            //处理得到的图片
+            String imgStr = Base64Util.encode(byteImg);
+            String params = URLEncoder.encode(imgStr,"UTF-8");
             //上传图片到百度进行ocd识别
+            String baiduOcrApi="https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic";
+            String result = HttpUtil.post(baiduOcrApi, accessToken, params);
+            System.out.println("result----"+result);
 
             responseMessage.setContent("2222");
         }

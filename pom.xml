@@ -68,12 +68,7 @@
             <version>4.12</version>
             <scope>compile</scope>
         </dependency>
-        <!--        http解析-->
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-            <version>5.2.4</version>
-        </dependency>
+
         <!-- XML 文件读写 -->
         <dependency>
             <groupId>org.dom4j</groupId>
@@ -92,6 +87,20 @@
             <artifactId>jaxb-impl</artifactId>
             <version>2.3.3</version>
         </dependency>
+        <!--        微信发模板消息http解析-->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>5.2.4</version>
+        </dependency>
+<!--百度api依赖-->
+        <dependency>
+            <groupId>com.baidu.aip</groupId>
+            <artifactId>java-sdk</artifactId>
+            <version>4.6.1</version>
+        </dependency>
+
+
 
     </dependencies>
 

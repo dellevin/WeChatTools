@@ -2,8 +2,8 @@ package com.wonder.util;
 
 
 import com.alibaba.fastjson.JSONObject;
-
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
@@ -33,6 +33,17 @@ public class ocrWeChat {
 
         return accessToken;
     }
+    public  static InputStream getImgByte(String imgUrl)throws  Exception
+    {
+        //设置url
+        URL url = new URL(imgUrl+".jpg");
+        // 打开连接 获取连接对象
+        HttpURLConnection openUrl = (HttpURLConnection) url.openConnection();
+        //通过输入流获取图片数据
+        InputStream is = openUrl.getInputStream();
+
+        return is;
+    }
 
     public static String getImg(String imgUrl) throws Exception {
         //设置url
@@ -41,10 +52,12 @@ public class ocrWeChat {
         URLConnection openUrl = url.openConnection();
         //通过输入流获取图片数据
         InputStream is = openUrl.getInputStream();
-        //创建一个文件对象用来保存图片，默认保存当前工程根目录，起名叫Copy.jpg
+
+
+
+        //创建一个文件对象用来保存图片
         Date date=new Date();
         SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-
         //需要生成几位
         int n = 1;
         //构造随机字符串
@@ -54,12 +67,11 @@ public class ocrWeChat {
         }
         String temp ;
         temp=format.format(date)+"-"+str;
-
         String savePath="src/main/resources/imgOcrDownload/"+temp+".jpg";
         //System.out.println("savePath:"+savePath);
-
         File imageFile = new File(savePath);
-        //得到图片的数据
+
+        //得到图片的byte数据
         byte[] data = readInputStream(is);
         //创建输出流
         FileOutputStream outStream = new FileOutputStream(imageFile);
