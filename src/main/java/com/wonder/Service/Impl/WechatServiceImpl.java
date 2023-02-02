@@ -38,7 +38,6 @@ public class WechatServiceImpl implements WechatService {
         responseMessage.setCreateTime(System.currentTimeMillis());
 
         String getMessage =  requestMessage.getContent();
-
         if(getMessage!=null)
         {
             //<xml>
@@ -49,12 +48,13 @@ public class WechatServiceImpl implements WechatService {
             //  <Content><![CDATA[你好]]></Content>
             //</xml>
 
+
             //这个是响应消息内容，直接复制收到的内容做演示，甚至整个响应对象都可以直接使用原请求参数对象，只需要换下from和to就可以了哈哈哈
             responseMessage.setContent(requestMessage.getContent());
         }
+
         //获取 图片地址
         String getPicUrl=requestMessage.getPicUrl();
-
         if (getPicUrl!=null)
         {
             //请求图片需经过base64编码及urlencode后传入：图片的base64编码指将一副图片数据编码成一串字符串，
@@ -68,7 +68,6 @@ public class WechatServiceImpl implements WechatService {
              * https://ai.baidu.com/file/470B3ACCA3FE43788B5A963BF0B625F3
              * 下载
              */
-
             System.out.println(getPicUrl);
             //得到保存图片的路径
             //String imgPath=ocrWeChat.getImg(getPicUrl);
@@ -83,7 +82,7 @@ public class WechatServiceImpl implements WechatService {
             //System.out.println("BDYaccessToken: "+accessToken);
             //处理得到的图片
             String imgStr = Base64Util.encode(byteImg);
-            System.out.println(imgStr);
+            //System.out.println(imgStr);
             String imgParam = URLEncoder.encode(imgStr, "UTF-8");
             String param = "image=" + imgParam;
 
@@ -92,30 +91,34 @@ public class WechatServiceImpl implements WechatService {
             String result = HttpUtil.post(baiduOcrApi, accessToken, param);
             //System.out.println("result----"+result);
 
-
             cn.hutool.json.JSONObject jsonObject = JSONUtil.parseObj(result);
             String wordsResult= jsonObject.getStr("words_result");
             int getWords_result_num =jsonObject.getInt("words_result_num");
             String message="" ,tempMessage;
             //初始时间
             long startTime = System.currentTimeMillis();
-
-            if(getWords_result_num>1)
-            {
-                //message = "1";
-                wordsResult = wordsResult.substring(1,wordsResult.length() - 1);
-                String[] results = wordsResult.split(",");
-                for(int i = 0; i < results.length; i++) {
-                    //System.out.println(results[i]);
-                    Map maps=(Map) JSON.parse(results[i]);
-                    tempMessage = (String) maps.get("words");
-                    message = tempMessage+"\n"+message;
+            //System.out.println("+++++++++++++++++++++++++"+wordsResult);
+                if(getWords_result_num>1)
+                {
+                    //message = "1";
+                    wordsResult = wordsResult.substring(1,wordsResult.length() - 1);
+                    String[] results = wordsResult.split(",");
+                    for(int i = 0; i < results.length; i++) {
+                        //System.out.println(results[i]);
+                        Map maps=(Map) JSON.parse(results[i]);
+                        tempMessage = (String) maps.get("words");
+                        message = tempMessage+"\n"+message;
+                    }
+                }else if(getWords_result_num==1){
+                    wordsResult = wordsResult.substring(1,wordsResult.length() - 1);
+                    Map maps=(Map) JSON.parse(wordsResult);
+                    message = (String) maps.get("words");
+                }else if(getWords_result_num==0)
+                {
+                    message="得~识别不出来。。。。好尴尬啊";
                 }
-            }else{
-                wordsResult = wordsResult.substring(1,wordsResult.length() - 1);
-                Map maps=(Map) JSON.parse(wordsResult);
-                message = (String) maps.get("words");
-            }
+
+
             //结束时间
             long endTime = System.currentTimeMillis();
             long resTime =endTime - startTime;
@@ -129,11 +132,7 @@ public class WechatServiceImpl implements WechatService {
             {
                 responseMessage.setContent(message);
             }
-
-
-
         }
-
 
         return responseMessage;
     }
