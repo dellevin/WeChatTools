@@ -1,5 +1,6 @@
 package com.wonder.testDemo;
 
+import com.alibaba.fastjson.JSON;
 import org.junit.Test;
 
 
@@ -8,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 import java.util.Properties;
 
 public class testDemo {
@@ -33,5 +35,23 @@ public class testDemo {
         System.err.println(weChatAppId);
         String weChatSecret = properties.getProperty("weChatSecret");
         System.err.println(weChatSecret);
+    }
+    @Test
+    public  void result() {
+        //
+        // {"words_result":
+        // [{"words":"base.apk.1"}, {"words":"28.2M"}, {"words":"微信电脑版"},{"words":"昨天156"}, {"words":"迄今所有人生都大写着失败但不妨碍我继续向前"}],"words_result_num":5,"log_id":1621058160735632335}
+        String tt="",ttemp="";
+        String temp = "{\"words\":\"base.apk.1\"},{\"words\":\"28.2M\"},{\"words\":\"微信电脑版\"},{\"words\":\"昨天156\"},{\"words\":\"迄今所有人生都大写着失败但不妨碍我继续向前\"}";
+        String[] results = temp.split(",");
+        for(int i = 0; i < results.length; i++) {
+            //System.out.println(results[i]);
+            Map maps=(Map) JSON.parse(results[i]);
+            tt = (String) maps.get("words");
+            ttemp = tt+"\n"+ttemp;
+        }
+        System.out.println(ttemp);
+
+        //[{"words":"迄今所有人生都大写着失败，但不妨碍我继续向前"}]
     }
 }
