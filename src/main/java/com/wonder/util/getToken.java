@@ -6,8 +6,7 @@ import cn.hutool.http.HttpUtil;
 
 public class getToken {
     public static String pushAccessToken(String  weChatAppId,String  weChatSecret) {
-        //String weChatAppId = "wx3d009c98d80ebe62";
-        //String weChatSecret = "ad5cb63d9402f8a1fd9de4c30adc5d85";
+
         String url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="
                 + weChatAppId
                 +"&secret="
