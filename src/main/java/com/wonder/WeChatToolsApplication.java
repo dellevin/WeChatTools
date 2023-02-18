@@ -8,10 +8,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 //@ComponentScan("com.wonder.Controller")
 @SpringBootApplication
 public class WeChatToolsApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(WeChatToolsApplication.class, args);
     }
+
 
 
 }
